@@ -53,7 +53,7 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(400).json({ message: "User notfaund", error });
+      res.status(400).json({ message: "User notfaund" });
     }
     const bcryptPassport = await bcrypt.compareSync(password, user.password);
     if (!bcryptPassport) {
