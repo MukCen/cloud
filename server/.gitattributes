@@ -1,0 +1,5 @@
+# .gitattributes
+* text=auto eol=lf
+
+# Вказати файли, які повинні мати CRLF
+*.json text eol=crlf
