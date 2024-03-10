@@ -2,7 +2,8 @@ import React from "react";
 import "./navbar.css";
 import Logo from "../../assets/img/navbar-logo.svg";
 import { NavLink } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
+import { exit_user } from "../../reducers/userReducer";
+import { useDispatch, useSelector } from "react-redux";
 // import { logout } from "../../reducers/userReducer";
 // import { getFiles, searchFiles } from "../../actions/file";
 // import { showLoader } from "../../reducers/appReducer";
@@ -13,7 +14,8 @@ const Navbar = () => {
   //   const isAuth = useSelector((state) => state.user.isAuth);
   //   const currentDir = useSelector((state) => state.files.currentDir);
   //   const currentUser = useSelector((state) => state.user.currentUser);
-  //   const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const { isAuth } = useSelector((state) => state.user);
   //   const [searchName, setSearchName] = useState("");
   //   const [searchTimeout, setSearchTimeout] = useState(false);
   //   const avatar = currentUser.avatar
@@ -50,13 +52,24 @@ const Navbar = () => {
           className='navbar__logo'
         />
         <div className='navbar__header'>MERN CLOUD</div>
+        {!isAuth && (
+          <div className='navbar__login'>
+            <NavLink to='/login'>Увійти</NavLink>
+          </div>
+        )}
+        {!isAuth && (
+          <div className='navbar__registration'>
+            <NavLink to='/registration'>Реєстрація</NavLink>
+          </div>
+        )}
+        {isAuth && (
+          <div
+            className='navbar__login'
+            onClick={() => dispatch(exit_user())}>
+            Вийти
+          </div>
+        )}
 
-        <div className='navbar__login'>
-          <NavLink to='/login'>Увійти</NavLink>
-        </div>
-        <div className='navbar__registration'>
-          <NavLink to='/registration'>Реєстрація</NavLink>
-        </div>
         {/* <div
           className='navbar__login'
           onClick={() => dispatch(logout())}>

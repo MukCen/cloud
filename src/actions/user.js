@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { Add_User } from "../reducers/userReducer";
+import { Auth_User, add_user } from "../reducers/userReducer";
 
 export const registration = async (email, password) => {
   try {
@@ -24,13 +24,30 @@ export const login = (email, password) => {
         { email, password }
       );
 
-      dispatch(Add_User(response.data.user));
+      dispatch(add_user(response.data.user));
       const token = localStorage.setItem("token", response.data.token);
       console.log("yser created", response.data);
       alert(response.data.message, token);
     } catch (error) {
       console.log("error ", error);
-      alert(error.response.data.message);
+      alert(error);
+    }
+  };
+};
+export const auth = () => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/auth/auth", {
+        headers: {
+          authorization: `Bearer ` + `${localStorage.getItem("token")}`,
+        },
+      });
+
+      dispatch(add_user(response.data.user));
+      localStorage.setItem("token", response.data.token);
+      console.log(response.data);
+    } catch (error) {
+      console.log("Error Auth", error);
     }
   };
 };
