@@ -7,6 +7,7 @@ const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config/config");
 const config = require("../config/config");
+const authMiddlevare = require("../middleware/auth.middlevare");
 
 const router = new Router();
 // 1 Add router.use(express.json());  and (!errors.isEmpty())
@@ -76,6 +77,33 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/auth", authMiddlevare, async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.user.id });
+    console.log(user);
+    if (!user) {
+      res.status(400).json({ messages: "User not faund" });
+    }
+    const token = JWT.sign({ id: user.id }, SECRET_KEY, {
+      expiresIn: "1h",
+    });
+    return res.json({
+      token,
+      user,
+      // user: {
+      //   id: user.id,
+      //   email: user.email,
+      //   password: user.password,
+      //   diskSpace: user.diskSpace,
+      //   usedSpac: user.usedSpac,
+      //   files: user.files,
+      // },
+    });
+  } catch (error) {
+    return res.status(500).json({ messages: "Server token erroe", error });
   }
 });
 module.exports = router;
