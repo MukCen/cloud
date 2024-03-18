@@ -7,7 +7,9 @@ const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config/config");
 const config = require("../config/config");
-const authMiddlevare = require("../middleware/auth.middlevare");
+const authMiddleware = require("../middleware/auth.middleware");
+const File = require("../models/File");
+const fileService = require("../services/file.service");
 
 const router = new Router();
 // 1 Add router.use(express.json());  and (!errors.isEmpty())
@@ -39,6 +41,8 @@ router.post(
 
       const newUser = new User({ email, password: hashPassword });
       await newUser.save();
+
+      await fileService.createDir(new File({ user: newUser.id, name: "" }));
 
       return res.status(201).json({ message: "User created successfully" });
     } catch (error) {
@@ -80,7 +84,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/auth", authMiddlevare, async (req, res) => {
+router.get("/auth", authMiddleware, async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.user.id });
     console.log(user);
